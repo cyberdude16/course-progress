@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <title>Syllabus — course progress</title>
 <style>
   :root {
@@ -19,8 +19,34 @@
     --accent-wash: #E7F3ED;
     --track: #E8EDE9;
     --danger: #B24A3F;
+    --warn: #B48533;
+    --pad-card: 16px 18px 14px;
+    --topic-h: 33px;
+    --gap: 8px;
     --sans: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
     --mono: ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0F1713;
+    --surface: #16211C;
+    --ink: #E7F0EA;
+    --muted: #9DB1A6;
+    --faint: #71867B;
+    --line: #2A3A32;
+    --line-soft: #22302A;
+    --accent: #49C794;
+    --accent-deep: #8BE3BC;
+    --accent-wash: #1D382C;
+    --track: #26362E;
+    --danger: #F08A7E;
+    --warn: #D6A94F;
+  }
+
+  :root.compact {
+    --pad-card: 10px 14px 8px;
+    --topic-h: 27px;
+    --gap: 5px;
   }
 
   * { box-sizing: border-box; }
@@ -48,20 +74,16 @@
   .app {
     max-width: 840px;
     margin: 0 auto;
-    padding: 30px 20px 60px;
+    padding: 26px 20px 56px;
   }
 
   .topbar {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
   }
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .brand { display: flex; align-items: center; gap: 10px; }
 
   .brand-mark {
     width: 20px;
@@ -88,10 +110,34 @@
     margin: 0;
     font-size: 17px;
     font-weight: 650;
-    letter-spacing: -0.025em;
+    letter-spacing: -.025em;
   }
 
-  .top-actions { margin-left: auto; }
+  .top-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sync {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .sync i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--faint);
+  }
+
+  .sync.synced i { background: var(--accent); }
+  .sync.saving i { background: var(--warn); }
 
   .btn {
     border: 1px solid transparent;
@@ -100,14 +146,12 @@
     font-size: 13px;
     font-weight: 600;
     line-height: 1.3;
+    white-space: nowrap;
     transition: background .15s ease, border-color .15s ease, color .15s ease;
   }
 
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-  }
-
+  .btn-primary { background: var(--accent); color: #fff; }
+  :root[data-theme="dark"] .btn-primary { color: #0F1713; }
   .btn-primary:hover { background: var(--accent-deep); }
 
   .btn-quiet {
@@ -125,7 +169,26 @@
     font-size: 12px;
   }
 
-  .btn-mini:hover { background: #D8ECE2; }
+  .btn-mini:hover { background: var(--accent); color: #fff; }
+  :root[data-theme="dark"] .btn-mini:hover { color: #0F1713; }
+
+  .icon-btn {
+    width: 26px;
+    height: 26px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--faint);
+    padding: 0;
+  }
+
+  .icon-btn svg { width: 15px; height: 15px; }
+  .icon-btn:hover { background: var(--line-soft); color: var(--ink); }
+  .icon-btn.danger:hover { background: var(--accent-wash); color: var(--danger); }
+  .icon-btn.on { color: var(--accent); }
 
   .eyebrow {
     margin: 0;
@@ -140,26 +203,15 @@
     display: flex;
     align-items: center;
     gap: 30px;
-    padding: 28px 0 30px;
-    margin-bottom: 4px;
+    padding: 22px 0 24px;
+    margin-bottom: 14px;
     border-bottom: 1px solid var(--line);
   }
 
-  .dial {
-    position: relative;
-    width: 148px;
-    height: 148px;
-    flex: none;
-  }
-
+  .dial { position: relative; width: 148px; height: 148px; flex: none; }
   .dial svg { width: 100%; height: 100%; display: block; }
 
-  .dial-track {
-    fill: none;
-    stroke: var(--track);
-    stroke-width: 9;
-  }
-
+  .dial-track { fill: none; stroke: var(--track); stroke-width: 9; }
   .dial-fill {
     fill: none;
     stroke: var(--accent);
@@ -170,6 +222,8 @@
 
   .tick { stroke: #D3DDD7; stroke-width: 1; }
   .tick.major { stroke: #A8B9B0; stroke-width: 1.5; }
+  :root[data-theme="dark"] .tick { stroke: #33463C; }
+  :root[data-theme="dark"] .tick.major { stroke: #567064; }
 
   .dial-center {
     position: absolute;
@@ -178,7 +232,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
   }
 
   .dial-value {
@@ -206,17 +259,13 @@
     line-height: 1.25;
   }
 
-  .overview-sub {
-    margin: 0;
-    font-size: 13px;
-    color: var(--muted);
-  }
+  .overview-sub { margin: 0; font-size: 13px; color: var(--muted); }
 
   .section-head {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 24px 0 14px;
+    margin: 18px 0 10px;
   }
 
   .section-head h2 {
@@ -249,6 +298,53 @@
 
   .link-btn:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
 
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .text-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 8px 10px;
+    background: var(--surface);
+    font-size: 13px;
+  }
+
+  .text-input::placeholder { color: var(--faint); }
+
+  .text-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-wash);
+  }
+
+  .search { min-width: 180px; }
+
+  .filters {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .filters button {
+    border: 0;
+    background: transparent;
+    padding: 7px 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .filters button + button { border-left: 1px solid var(--line); }
+  .filters button.active { background: var(--accent-wash); color: var(--accent-deep); font-weight: 600; }
+
   .new-course {
     display: flex;
     gap: 8px;
@@ -259,33 +355,25 @@
     border-radius: 10px;
   }
 
-  .text-input {
-    flex: 1;
-    min-width: 0;
-    border: 1px solid var(--line);
-    border-radius: 7px;
-    padding: 8px 10px;
-    background: #fff;
-    font-size: 13px;
-  }
-
-  .text-input::placeholder { color: var(--faint); }
-  .text-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
-
   .course {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 12px;
-    padding: 16px 18px 14px;
+    padding: var(--pad-card);
     margin-bottom: 12px;
     box-shadow: 0 1px 2px rgba(20, 35, 29, .04), 0 8px 24px rgba(20, 35, 29, .03);
   }
 
+  :root[data-theme="dark"] .course { box-shadow: none; }
+
   .course-head {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
+
+  .collapse svg { transition: transform .15s ease; }
+  .course.collapsed .collapse svg { transform: rotate(-90deg); }
 
   .course-title {
     flex: 1;
@@ -305,69 +393,48 @@
     border: 1px solid var(--accent);
     border-radius: 6px;
     padding: 3px 7px;
+    background: var(--surface);
     font-size: 15px;
     font-weight: 650;
   }
 
   .rename-input:focus { outline: none; box-shadow: 0 0 0 3px var(--accent-wash); }
 
-  .course-figures {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    font-family: var(--mono);
-    font-size: 12px;
+  .count {
+    font: 12px/1 var(--mono);
     color: var(--muted);
     white-space: nowrap;
   }
 
-  .course-figures .pct {
-    min-width: 42px;
-    text-align: right;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--accent-deep);
-  }
-
-  .icon-btn {
-    width: 26px;
-    height: 26px;
+  .mini-ring {
+    position: relative;
+    width: 40px;
+    height: 40px;
     flex: none;
     display: grid;
     place-items: center;
-    border: 0;
-    border-radius: 6px;
-    background: transparent;
-    color: var(--faint);
-    padding: 0;
   }
 
-  .icon-btn svg { width: 15px; height: 15px; }
-  .icon-btn:hover { background: var(--line-soft); color: var(--ink); }
-  .icon-btn.danger:hover { background: #FBEDEB; color: var(--danger); }
+  .mini-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mini-track { fill: none; stroke: var(--track); stroke-width: 4; }
+  .mini-fill { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
 
-  .meter {
-    height: 5px;
-    margin: 13px 0 12px;
-    border-radius: 99px;
-    background: var(--track);
-    overflow: hidden;
+  .mini-value {
+    position: relative;
+    font: 600 10px/1 var(--mono);
+    letter-spacing: -.04em;
+    color: var(--accent-deep);
   }
 
-  .meter-fill {
-    height: 100%;
-    border-radius: 99px;
-    background: var(--accent);
-    transition: width .35s cubic-bezier(.2, .8, .2, 1);
-  }
+  .course-body { margin-top: var(--gap); }
 
   .topics { list-style: none; margin: 0; padding: 0; }
 
   .topic {
     display: flex;
     align-items: center;
-    gap: 8px;
-    min-height: 33px;
+    gap: 4px;
+    min-height: var(--topic-h);
     border-top: 1px solid var(--line-soft);
   }
 
@@ -392,16 +459,15 @@
     margin: 0;
     border: 1.5px solid #B7C6BE;
     border-radius: 5px;
-    background: #fff;
+    background: var(--surface);
     position: relative;
     cursor: pointer;
     transition: background .12s ease, border-color .12s ease;
   }
 
-  .topic input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
+  :root[data-theme="dark"] .topic input[type="checkbox"] { border-color: #587468; }
+
+  .topic input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
 
   .topic input[type="checkbox"]:checked::after {
     content: "";
@@ -410,7 +476,7 @@
     top: 2px;
     width: 5px;
     height: 9px;
-    border: solid #fff;
+    border: solid var(--surface);
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
@@ -427,25 +493,28 @@
   .topic.is-done .topic-text {
     color: var(--faint);
     text-decoration: line-through;
-    text-decoration-color: #BCC9C2;
+    text-decoration-color: var(--faint);
   }
 
-  .topic-del { opacity: 0; }
+  .topic-actions { display: flex; align-items: center; gap: 2px; opacity: 0; }
+  .course:hover .topic-actions, .topic:focus-within .topic-actions { opacity: 1; }
+  .topic-actions .icon-btn { width: 22px; height: 22px; }
+  .topic-actions .icon-btn svg { width: 13px; height: 13px; }
 
-  .course:hover .topic-del,
-  .topic-del:focus-visible { opacity: 1; }
-
-  .no-topics {
-    margin: 0 0 2px;
-    font-size: 13px;
-    color: var(--faint);
+  .bulk-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
   }
+
+  .no-topics { margin: 0 0 2px; font-size: 13px; color: var(--faint); }
 
   .add-topic {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: 6px;
   }
 
   .add-topic .text-input {
@@ -455,27 +524,35 @@
     padding: 6px 2px;
   }
 
-  .add-topic .text-input:focus {
-    box-shadow: none;
-    border-bottom-color: var(--accent);
-  }
+  .add-topic .text-input:focus { box-shadow: none; border-bottom-color: var(--accent); }
 
-  .empty {
+  .empty, .no-matches {
     border: 1px dashed var(--line);
     border-radius: 12px;
-    padding: 32px 20px;
+    padding: 30px 20px;
     text-align: center;
     background: rgba(255, 255, 255, .5);
   }
 
-  .empty h3 { margin: 0 0 6px; font-size: 15px; font-weight: 650; }
-  .empty p { margin: 0 0 16px; font-size: 13px; color: var(--muted); }
+  :root[data-theme="dark"] .empty, :root[data-theme="dark"] .no-matches { background: rgba(255, 255, 255, .02); }
+
+  .empty h3, .no-matches h3 { margin: 0 0 6px; font-size: 15px; font-weight: 650; }
+  .empty p, .no-matches p { margin: 0 0 16px; font-size: 13px; color: var(--muted); }
 
   .footer {
-    margin-top: 26px;
+    margin-top: 24px;
     font-size: 11.5px;
     color: var(--faint);
     text-align: center;
+  }
+
+  .kbd {
+    font: 600 10px/1 var(--mono);
+    border: 1px solid var(--line);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 2px 4px;
+    color: var(--muted);
   }
 
   .toast {
@@ -484,7 +561,7 @@
     bottom: 24px;
     transform: translate(-50%, 12px);
     background: var(--ink);
-    color: #fff;
+    color: var(--bg);
     font-size: 12.5px;
     padding: 9px 15px;
     border-radius: 99px;
@@ -497,19 +574,19 @@
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
   @media (hover: none) {
-    .topic-del { opacity: 1; }
+    .topic-actions { opacity: 1; }
   }
 
-  @media (max-width: 560px) {
-    .app { padding: 22px 14px 48px; }
-    .overview { gap: 20px; padding: 22px 0 24px; }
+  @media (max-width: 600px) {
+    .app { padding: 20px 14px 48px; }
+    .overview { gap: 18px; }
     .dial { width: 118px; height: 118px; }
     .dial-value { font-size: 31px; }
     .overview-stat { font-size: 18px; }
-    .section-head { flex-wrap: wrap; }
-    .course { padding: 14px 14px 12px; }
-    .course-figures { gap: 6px; }
-    .brand h1 { font-size: 16px; }
+    .sync span { display: none; }
+    .course-head { flex-wrap: wrap; }
+    .mini-ring { width: 34px; height: 34px; }
+    .footer .kbd { display: none; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -525,6 +602,9 @@
       <h1>Syllabus</h1>
     </div>
     <div class="top-actions">
+      <span id="sync-status" class="sync offline" title="Local storage only"><i></i><span>Offline</span></span>
+      <button type="button" id="theme-btn" class="icon-btn" aria-label="Switch to dark mode" title="Dark mode"></button>
+      <button type="button" id="density-btn" class="icon-btn" aria-label="Use compact layout" title="Compact layout"></button>
       <button type="button" id="new-course-btn" class="btn btn-primary">+ New course</button>
     </div>
   </header>
@@ -548,32 +628,48 @@
     </div>
   </section>
 
-  <main>
-    <div class="section-head">
-      <h2>Courses</h2>
-      <span id="course-count" class="count-pill">0</span>
-      <span class="spacer"></span>
-      <button type="button" id="export-btn" class="link-btn">Export</button>
-      <button type="button" id="import-btn" class="link-btn">Import</button>
-      <input type="file" id="import-file" accept=".json,application/json" hidden>
+  <div class="section-head">
+    <h2>Courses</h2>
+    <span id="course-count" class="count-pill">0</span>
+    <span class="spacer"></span>
+    <button type="button" id="export-btn" class="link-btn">Export</button>
+    <button type="button" id="import-btn" class="link-btn">Import</button>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" class="text-input search" type="search" placeholder="Search courses and topics  /" aria-label="Search courses and topics" autocomplete="off">
+    <div class="filters" role="group" aria-label="Filter topics">
+      <button type="button" data-filter="all" class="active">All</button>
+      <button type="button" data-filter="todo">To do</button>
+      <button type="button" data-filter="done">Done</button>
     </div>
+    <button type="button" id="expand-all" class="link-btn">Expand all</button>
+    <button type="button" id="collapse-all" class="link-btn">Collapse all</button>
+  </div>
 
-    <form id="new-course-form" class="new-course" hidden>
-      <input id="new-course-input" class="text-input" type="text" maxlength="100" placeholder="Course name" aria-label="Course name" autocomplete="off" required>
-      <button type="submit" class="btn btn-primary">Add course</button>
-      <button type="button" id="new-course-cancel" class="btn btn-quiet">Cancel</button>
-    </form>
+  <form id="new-course-form" class="new-course" hidden>
+    <input id="new-course-input" class="text-input" type="text" maxlength="100" placeholder="Course name" aria-label="Course name" autocomplete="off" required>
+    <button type="submit" class="btn btn-primary">Add course</button>
+    <button type="button" id="new-course-cancel" class="btn btn-quiet">Cancel</button>
+  </form>
 
-    <div id="course-list" class="course-list"></div>
+  <div id="course-list" class="course-list"></div>
 
-    <div id="empty" class="empty" hidden>
-      <h3>No courses yet</h3>
-      <p>Add a course, list its topics, then tick them off as you finish.</p>
-      <button type="button" id="empty-new" class="btn btn-primary">+ Add your first course</button>
-    </div>
-  </main>
+  <div id="empty" class="empty" hidden>
+    <h3>No courses yet</h3>
+    <p>Add a course, list its topics, then tick them off as you finish.</p>
+    <button type="button" id="empty-new" class="btn btn-primary">+ Add your first course</button>
+  </div>
 
-  <footer class="footer">Saved in this browser. Use Export to keep a backup.</footer>
+  <div id="no-matches" class="no-matches" hidden>
+    <h3>No matches</h3>
+    <p>Try another search or switch the filter.</p>
+  </div>
+
+  <footer class="footer">
+    Synced to Vercel · <span class="kbd">n</span> new course · <span class="kbd">/</span> search · Export for backup
+  </footer>
 </div>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -583,7 +679,10 @@
   'use strict';
 
   const KEY = 'syllabus.courses.v1';
-  const CIRCUMFERENCE = 2 * Math.PI * 58;
+  const TIME_KEY = 'syllabus.updatedAt.v1';
+  const PREFS_KEY = 'syllabus.prefs.v1';
+  const CIRC = 2 * Math.PI * 58;
+  const MINI_CIRC = 2 * Math.PI * 17;
   const SVG_NS = 'http://www.w3.org/2000/svg';
 
   const list = document.getElementById('course-list');
@@ -591,14 +690,27 @@
   const newForm = document.getElementById('new-course-form');
   const newInput = document.getElementById('new-course-input');
   const importFile = document.getElementById('import-file');
-
-  let courses = load();
-  let toastTimer;
+  const search = document.getElementById('search');
+  const syncEl = document.getElementById('sync-status');
 
   const ICONS = {
     pencil: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13l.6-3.1 6.5-6.5 2.5 2.5-6.5 6.5L3 13z"/><path d="M9.6 3.9l2.5 2.5"/></svg>',
-    cross: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>'
+    cross: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7"/></svg>',
+    chevron: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>',
+    up: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10l4-4 4 4"/></svg>',
+    down: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>',
+    sun: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3 3l1 1M12 12l1 1M13 3l-1 1M4 12l-1 1"/></svg>',
+    moon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 10.5A5.5 5.5 0 0 1 5.5 2.5a5.5 5.5 0 1 0 8 8z"/></svg>',
+    rows: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="3" width="12" height="3" rx="1"/><rect x="2" y="9" width="12" height="3" rx="1"/></svg>',
+    wide: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="4" width="12" height="8" rx="1"/></svg>'
   };
+
+  let courses = loadCourses();
+  let prefs = loadPrefs();
+  let state = { updatedAt: Number(localStorage.getItem(TIME_KEY)) || 0 };
+  let saveTimer;
+  let pushing = false;
+  let toastTimer;
 
   function uid() {
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
@@ -618,6 +730,7 @@
       return {
         id: uid(),
         title: String(course.title || 'Untitled course').slice(0, 100),
+        collapsed: Boolean(course.collapsed),
         topics: topics.map(function (topic) {
           return {
             id: uid(),
@@ -629,7 +742,7 @@
     });
   }
 
-  function load() {
+  function loadCourses() {
     try {
       const raw = localStorage.getItem(KEY);
       return raw ? normalize(JSON.parse(raw)) : [];
@@ -638,12 +751,98 @@
     }
   }
 
-  function save() {
+  function loadPrefs() {
+    const fallback = { theme: 'light', density: 'comfortable', filter: 'all' };
+    try {
+      const saved = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}');
+      return {
+        theme: saved.theme === 'dark' ? 'dark' : 'light',
+        density: saved.density === 'compact' ? 'compact' : 'comfortable',
+        filter: ['all', 'todo', 'done'].indexOf(saved.filter) >= 0 ? saved.filter : 'all'
+      };
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function savePrefs() {
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (error) {}
+  }
+
+  function saveLocal() {
     try {
       localStorage.setItem(KEY, JSON.stringify(courses));
+      localStorage.setItem(TIME_KEY, String(state.updatedAt));
     } catch (error) {
       toast('Could not save in this browser');
     }
+  }
+
+  function touch() {
+    state.updatedAt = Date.now();
+    saveLocal();
+    scheduleSync();
+  }
+
+  function setSync(name) {
+    const labels = { offline: 'Offline', saving: 'Saving…', synced: 'Synced' };
+    syncEl.className = 'sync ' + name;
+    syncEl.title = name === 'synced' ? 'Saved to Vercel' : (name === 'saving' ? 'Saving to Vercel' : 'Local storage only');
+    syncEl.querySelector('span').textContent = labels[name];
+  }
+
+  async function pushSync() {
+    if (pushing) return;
+    if (!navigator.onLine) { setSync('offline'); return; }
+    pushing = true;
+    setSync('saving');
+    try {
+      const response = await fetch('/api/progress', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ courses: courses, updatedAt: state.updatedAt })
+      });
+      if (!response.ok) throw new Error('sync failed');
+      setSync('synced');
+    } catch (error) {
+      setSync('offline');
+    } finally {
+      pushing = false;
+    }
+  }
+
+  function scheduleSync() {
+    setSync('saving');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(pushSync, 500);
+  }
+
+  async function initSync() {
+    try {
+      const response = await fetch('/api/progress', { cache: 'no-store' });
+      if (!response.ok) throw new Error('sync unavailable');
+      const remote = await response.json();
+      if (remote.updatedAt > state.updatedAt) {
+        courses = normalize(remote.courses);
+        state.updatedAt = remote.updatedAt;
+        saveLocal();
+        render();
+        toast('Loaded synced progress');
+      } else if (!remote.updatedAt) {
+        scheduleSync();
+      }
+      setSync('synced');
+    } catch (error) {
+      setSync('offline');
+    }
+  }
+
+  function toast(message) {
+    const el = document.getElementById('toast');
+    el.textContent = message;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2400);
   }
 
   function findCourse(id) {
@@ -662,14 +861,6 @@
     return { all: all, done: done, percent: all ? Math.round(done / all * 100) : 0 };
   }
 
-  function toast(message) {
-    const el = document.getElementById('toast');
-    el.textContent = message;
-    el.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2400);
-  }
-
   function buildTicks() {
     const group = document.getElementById('dial-ticks');
     for (let i = 0; i < 48; i++) {
@@ -685,11 +876,11 @@
       line.setAttribute('class', major ? 'tick major' : 'tick');
       group.appendChild(line);
     }
-    dialFill.style.strokeDasharray = CIRCUMFERENCE.toFixed(2);
+    dialFill.style.strokeDasharray = CIRC.toFixed(2);
   }
 
   function updateDial(value) {
-    dialFill.style.strokeDashoffset = (CIRCUMFERENCE * (1 - value / 100)).toFixed(2);
+    dialFill.style.strokeDashoffset = (CIRC * (1 - value / 100)).toFixed(2);
     dialFill.style.opacity = value ? '1' : '0';
   }
 
@@ -705,47 +896,115 @@
     updateDial(t.percent);
   }
 
+  function applyView() {
+    document.documentElement.dataset.theme = prefs.theme;
+    document.documentElement.classList.toggle('compact', prefs.density === 'compact');
+    const themeBtn = document.getElementById('theme-btn');
+    themeBtn.innerHTML = prefs.theme === 'dark' ? ICONS.sun : ICONS.moon;
+    themeBtn.setAttribute('aria-label', prefs.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    themeBtn.title = prefs.theme === 'dark' ? 'Light mode' : 'Dark mode';
+    const densityBtn = document.getElementById('density-btn');
+    densityBtn.innerHTML = prefs.density === 'compact' ? ICONS.wide : ICONS.rows;
+    densityBtn.setAttribute('aria-label', prefs.density === 'compact' ? 'Use comfortable layout' : 'Use compact layout');
+    densityBtn.title = prefs.density === 'compact' ? 'Comfortable layout' : 'Compact layout';
+    document.querySelectorAll('.filters button').forEach(function (button) {
+      button.classList.toggle('active', button.dataset.filter === prefs.filter);
+    });
+  }
+
+  function matches(topic, course, query, filter) {
+    if (filter === 'todo' && topic.done) return false;
+    if (filter === 'done' && !topic.done) return false;
+    if (!query) return true;
+    return topic.title.toLowerCase().indexOf(query) >= 0 || course.title.toLowerCase().indexOf(query) >= 0;
+  }
+
+  function applyFilters() {
+    const query = search.value.trim().toLowerCase();
+    const filter = prefs.filter;
+    let visibleCourses = 0;
+    Array.prototype.forEach.call(list.querySelectorAll('.course'), function (card) {
+      const course = findCourse(card.dataset.course);
+      if (!course) return;
+      const titleMatch = !query || course.title.toLowerCase().indexOf(query) >= 0;
+      let visibleTopics = 0;
+      Array.prototype.forEach.call(card.querySelectorAll('.topic'), function (row) {
+        const topic = course.topics.find(function (t) { return t.id === row.dataset.topicRow; });
+        const show = topic ? matches(topic, course, query, filter) : false;
+        row.hidden = !show;
+        if (show) visibleTopics++;
+      });
+      const showCourse = courses.length > 0 && (titleMatch || visibleTopics > 0);
+      card.hidden = !showCourse;
+      if (showCourse) visibleCourses++;
+    });
+    document.getElementById('no-matches').hidden = courses.length === 0 || visibleCourses > 0;
+  }
+
   function updateCourseMeter(card, course) {
-    const done = course.topics.filter(function (t) { return t.done; }).length;
     const value = percent(course);
-    card.querySelector('.course-figures .count').textContent = done + '/' + course.topics.length;
-    card.querySelector('.course-figures .pct').textContent = value + '%';
-    card.querySelector('.meter-fill').style.width = value + '%';
-    card.querySelector('.meter').setAttribute('aria-valuenow', value);
+    const done = course.topics.filter(function (t) { return t.done; }).length;
+    card.querySelector('.count').textContent = done + '/' + course.topics.length;
+    card.querySelector('.mini-value').textContent = String(value);
+    const ring = card.querySelector('.mini-fill');
+    ring.style.strokeDasharray = MINI_CIRC.toFixed(2);
+    ring.style.strokeDashoffset = (MINI_CIRC * (1 - value / 100)).toFixed(2);
+    card.querySelector('.mini-ring').setAttribute('aria-label', value + '% complete');
+    applyFilters();
+  }
+
+  function topicRow(course, topic) {
+    return '<li class="topic' + (topic.done ? ' is-done' : '') + '" data-topic-row="' + esc(topic.id) + '">' +
+      '<label>' +
+        '<input type="checkbox" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '"' + (topic.done ? ' checked' : '') + '>' +
+        '<span class="topic-text">' + esc(topic.title) + '</span>' +
+      '</label>' +
+      '<span class="topic-actions">' +
+        '<button type="button" class="icon-btn" data-action="topic-up" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '" aria-label="Move topic up" title="Move up">' + ICONS.up + '</button>' +
+        '<button type="button" class="icon-btn" data-action="topic-down" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '" aria-label="Move topic down" title="Move down">' + ICONS.down + '</button>' +
+        '<button type="button" class="icon-btn" data-action="topic-rename" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '" aria-label="Edit topic" title="Edit topic">' + ICONS.pencil + '</button>' +
+        '<button type="button" class="icon-btn danger" data-action="delete-topic" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '" aria-label="Delete topic: ' + esc(topic.title) + '" title="Delete topic">' + ICONS.cross + '</button>' +
+      '</span>' +
+    '</li>';
   }
 
   function courseCard(course) {
     const value = percent(course);
     const done = course.topics.filter(function (t) { return t.done; }).length;
-    const topics = course.topics.map(function (topic) {
-      return '<li class="topic' + (topic.done ? ' is-done' : '') + '">' +
-        '<label>' +
-          '<input type="checkbox" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '"' + (topic.done ? ' checked' : '') + '>' +
-          '<span class="topic-text">' + esc(topic.title) + '</span>' +
-        '</label>' +
-        '<button type="button" class="icon-btn topic-del" data-action="delete-topic" data-course="' + esc(course.id) + '" data-topic="' + esc(topic.id) + '" aria-label="Delete topic: ' + esc(topic.title) + '" title="Delete topic">' + ICONS.cross + '</button>' +
-      '</li>';
-    }).join('');
-
-    return '<article class="course" data-course="' + esc(course.id) + '">' +
+    const topics = course.topics.map(function (topic) { return topicRow(course, topic); }).join('');
+    const offset = (MINI_CIRC * (1 - value / 100)).toFixed(2);
+    return '<article class="course' + (course.collapsed ? ' collapsed' : '') + '" data-course="' + esc(course.id) + '">' +
       '<div class="course-head">' +
+        '<button type="button" class="icon-btn collapse" data-action="toggle-collapse" data-course="' + esc(course.id) + '" aria-label="' + (course.collapsed ? 'Expand' : 'Collapse') + ' course: ' + esc(course.title) + '" title="Collapse or expand">' + ICONS.chevron + '</button>' +
         '<h3 class="course-title">' + esc(course.title) + '</h3>' +
-        '<div class="course-figures"><span class="count">' + done + '/' + course.topics.length + '</span><span class="pct">' + value + '%</span></div>' +
-        '<button type="button" class="icon-btn" data-action="rename" data-course="' + esc(course.id) + '" aria-label="Rename course: ' + esc(course.title) + '" title="Rename course">' + ICONS.pencil + '</button>' +
+        '<span class="count">' + done + '/' + course.topics.length + '</span>' +
+        '<div class="mini-ring" role="img" aria-label="' + value + '% complete">' +
+          '<svg viewBox="0 0 44 44" aria-hidden="true"><circle class="mini-track" cx="22" cy="22" r="17"></circle><circle class="mini-fill" cx="22" cy="22" r="17" transform="rotate(-90 22 22)" style="stroke-dasharray:' + MINI_CIRC.toFixed(2) + ';stroke-dashoffset:' + offset + '"></circle></svg>' +
+          '<span class="mini-value">' + value + '</span>' +
+        '</div>' +
+        '<button type="button" class="icon-btn" data-action="course-up" data-course="' + esc(course.id) + '" aria-label="Move course up" title="Move up">' + ICONS.up + '</button>' +
+        '<button type="button" class="icon-btn" data-action="course-down" data-course="' + esc(course.id) + '" aria-label="Move course down" title="Move down">' + ICONS.down + '</button>' +
+        '<button type="button" class="icon-btn" data-action="rename-course" data-course="' + esc(course.id) + '" aria-label="Rename course: ' + esc(course.title) + '" title="Rename course">' + ICONS.pencil + '</button>' +
         '<button type="button" class="icon-btn danger" data-action="delete-course" data-course="' + esc(course.id) + '" aria-label="Delete course: ' + esc(course.title) + '" title="Delete course">' + ICONS.cross + '</button>' +
       '</div>' +
-      '<div class="meter" role="progressbar" aria-label="' + esc(course.title) + ' completion" aria-valuenow="' + value + '" aria-valuemin="0" aria-valuemax="100"><div class="meter-fill" style="width:' + value + '%"></div></div>' +
-      (topics ? '<ul class="topics">' + topics + '</ul>' : '<p class="no-topics">No topics yet — add one below.</p>') +
-      '<form class="add-topic" data-action="add-topic" data-course="' + esc(course.id) + '">' +
-        '<input class="text-input" type="text" name="topic" maxlength="120" placeholder="Add a topic" aria-label="New topic for ' + esc(course.title) + '" autocomplete="off" required>' +
-        '<button type="submit" class="btn btn-mini">Add</button>' +
-      '</form>' +
+      '<div class="course-body"' + (course.collapsed ? ' hidden' : '') + '>' +
+        (topics ? '<ul class="topics">' + topics + '</ul>' : '<p class="no-topics">No topics yet — add one below.</p>') +
+        '<div class="bulk-row">' +
+          '<button type="button" class="link-btn" data-action="mark-all" data-course="' + esc(course.id) + '">Mark all done</button>' +
+          '<button type="button" class="link-btn" data-action="reset-all" data-course="' + esc(course.id) + '">Reset</button>' +
+        '</div>' +
+        '<form class="add-topic" data-action="add-topic" data-course="' + esc(course.id) + '">' +
+          '<input class="text-input" type="text" name="topic" maxlength="120" placeholder="Add a topic" aria-label="New topic for ' + esc(course.title) + '" autocomplete="off" required>' +
+          '<button type="submit" class="btn btn-mini">Add</button>' +
+        '</form>' +
+      '</div>' +
     '</article>';
   }
 
   function render() {
     list.innerHTML = courses.map(courseCard).join('');
     updateOverall();
+    applyFilters();
   }
 
   function focusTopicInput(courseId) {
@@ -755,29 +1014,15 @@
     if (card) card.querySelector('.add-topic input').focus();
   }
 
-  function startRename(card, course) {
-    const title = card.querySelector('.course-title');
-    if (!title) return;
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'rename-input';
-    input.maxLength = 100;
-    input.value = course.title;
-    input.setAttribute('aria-label', 'Course name');
+  function editInline(input, original, commit) {
     let finished = false;
-
-    function finish(commit) {
+    function finish(save) {
       if (finished) return;
       finished = true;
       const value = input.value.trim();
-      if (commit && value && value !== course.title) {
-        course.title = value;
-        save();
-      }
-      render();
+      if (save && value && value !== original) commit(value);
+      else render();
     }
-
-    title.replaceWith(input);
     input.focus();
     input.select();
     input.addEventListener('keydown', function (event) {
@@ -785,6 +1030,50 @@
       else if (event.key === 'Escape') { event.preventDefault(); finish(false); }
     });
     input.addEventListener('blur', function () { finish(true); });
+  }
+
+  function makeInput(value, label) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'rename-input';
+    input.maxLength = 120;
+    input.value = value;
+    input.setAttribute('aria-label', label);
+    return input;
+  }
+
+  function startCourseRename(card, course) {
+    const title = card.querySelector('.course-title');
+    if (!title) return;
+    const input = makeInput(course.title, 'Course name');
+    title.replaceWith(input);
+    editInline(input, course.title, function (value) {
+      course.title = value;
+      touch();
+      render();
+    });
+  }
+
+  function startTopicRename(row, course, topic) {
+    const text = row.querySelector('.topic-text');
+    if (!text) return;
+    const input = makeInput(topic.title, 'Topic name');
+    input.style.flex = '1';
+    text.replaceWith(input);
+    editInline(input, topic.title, function (value) {
+      topic.title = value;
+      touch();
+      render();
+    });
+  }
+
+  function moveItem(items, id, direction) {
+    const index = items.findIndex(function (item) { return item.id === id; });
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= items.length) return false;
+    const item = items.splice(index, 1)[0];
+    items.splice(target, 0, item);
+    return true;
   }
 
   function showNewCourse() {
@@ -810,10 +1099,10 @@
     event.preventDefault();
     const title = newInput.value.trim();
     if (!title) return;
-    const course = { id: uid(), title: title, topics: [] };
+    const course = { id: uid(), title: title, collapsed: false, topics: [] };
     courses.push(course);
-    save();
     newForm.hidden = true;
+    touch();
     render();
     focusTopicInput(course.id);
   });
@@ -823,11 +1112,11 @@
     if (!form) return;
     event.preventDefault();
     const course = findCourse(form.dataset.course);
-    const input = form.elements.topic;
-    const title = input.value.trim();
+    const title = form.elements.topic.value.trim();
     if (!course || !title) return;
+    course.collapsed = false;
     course.topics.push({ id: uid(), title: title, done: false });
-    save();
+    touch();
     render();
     focusTopicInput(course.id);
   });
@@ -840,11 +1129,10 @@
     const topic = course.topics.find(function (t) { return t.id === checkbox.dataset.topic; });
     if (!topic) return;
     topic.done = checkbox.checked;
-    const card = checkbox.closest('.course');
     checkbox.closest('.topic').classList.toggle('is-done', checkbox.checked);
-    updateCourseMeter(card, course);
+    updateCourseMeter(checkbox.closest('.course'), course);
     updateOverall();
-    save();
+    touch();
   });
 
   list.addEventListener('click', function (event) {
@@ -852,20 +1140,81 @@
     if (!button) return;
     const course = findCourse(button.dataset.course);
     if (!course) return;
+    const action = button.dataset.action;
+    const topic = course.topics.find(function (t) { return t.id === button.dataset.topic; });
 
-    if (button.dataset.action === 'delete-topic') {
-      course.topics = course.topics.filter(function (t) { return t.id !== button.dataset.topic; });
-      save();
+    if (action === 'toggle-collapse') {
+      course.collapsed = !course.collapsed;
+      touch();
       render();
-    } else if (button.dataset.action === 'delete-course') {
+    } else if (action === 'course-up' || action === 'course-down') {
+      if (moveItem(courses, course.id, action === 'course-up' ? -1 : 1)) { touch(); render(); }
+    } else if (action === 'topic-up' || action === 'topic-down') {
+      if (topic && moveItem(course.topics, topic.id, action === 'topic-up' ? -1 : 1)) { touch(); render(); }
+    } else if (action === 'rename-course') {
+      startCourseRename(button.closest('.course'), course);
+    } else if (action === 'topic-rename') {
+      if (topic) startTopicRename(button.closest('.topic'), course, topic);
+    } else if (action === 'delete-topic') {
+      if (!topic) return;
+      course.topics = course.topics.filter(function (t) { return t.id !== topic.id; });
+      touch();
+      render();
+    } else if (action === 'mark-all' || action === 'reset-all') {
+      course.topics.forEach(function (t) { t.done = action === 'mark-all'; });
+      touch();
+      render();
+    } else if (action === 'delete-course') {
       if (window.confirm('Delete "' + course.title + '" and all its topics?')) {
         courses = courses.filter(function (c) { return c.id !== course.id; });
-        save();
+        touch();
         render();
       }
-    } else if (button.dataset.action === 'rename') {
-      startRename(button.closest('.course'), course);
     }
+  });
+
+  search.addEventListener('input', applyFilters);
+
+  document.querySelectorAll('.filters button').forEach(function (button) {
+    button.addEventListener('click', function () {
+      prefs.filter = button.dataset.filter;
+      savePrefs();
+      applyView();
+      applyFilters();
+    });
+  });
+
+  document.getElementById('expand-all').addEventListener('click', function () {
+    courses.forEach(function (course) { course.collapsed = false; });
+    touch();
+    render();
+  });
+
+  document.getElementById('collapse-all').addEventListener('click', function () {
+    courses.forEach(function (course) { course.collapsed = true; });
+    touch();
+    render();
+  });
+
+  document.getElementById('theme-btn').addEventListener('click', function () {
+    prefs.theme = prefs.theme === 'dark' ? 'light' : 'dark';
+    savePrefs();
+    applyView();
+  });
+
+  document.getElementById('density-btn').addEventListener('click', function () {
+    prefs.density = prefs.density === 'compact' ? 'comfortable' : 'compact';
+    savePrefs();
+    applyView();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    const tag = event.target.tagName;
+    const typing = tag === 'INPUT' || tag === 'TEXTAREA' || event.target.isContentEditable;
+    if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === '/') { event.preventDefault(); search.focus(); }
+    else if (event.key.toLowerCase() === 'n') { event.preventDefault(); showNewCourse(); }
+    else if (event.key === 'Escape' && search.value) { search.value = ''; applyFilters(); }
   });
 
   document.getElementById('export-btn').addEventListener('click', function () {
@@ -898,7 +1247,7 @@
       }
       if (window.confirm('Replace the current courses with ' + incoming.length + (incoming.length === 1 ? ' course' : ' courses') + ' from this file?')) {
         courses = incoming;
-        save();
+        touch();
         render();
         toast('Progress imported');
       }
@@ -909,7 +1258,9 @@
   });
 
   buildTicks();
+  applyView();
   render();
+  initSync();
 })();
 </script>
 </body>
