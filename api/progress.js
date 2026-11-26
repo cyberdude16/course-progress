@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       await put(
         KEY,
         JSON.stringify({ courses: data.courses, updatedAt }),
-        { access: 'private', addRandomSuffix: false, contentType: 'application/json' }
+        { access: 'private', addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' }
       );
       send(res, 200, { ok: true, updatedAt });
       return;
