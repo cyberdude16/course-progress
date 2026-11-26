@@ -46,6 +46,7 @@ export default async function handler(req, res) {
     res.setHeader('allow', 'GET, PUT');
     send(res, 405, { error: 'Method not allowed' });
   } catch (error) {
+    console.error(error);
     send(res, 500, { error: 'Storage request failed' });
   }
 }
