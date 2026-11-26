@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>Syllabus — course progress</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#1F7A5B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Syllabus">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
   :root {
     --bg: #F3F6F4;
@@ -634,6 +642,7 @@
     <span class="spacer"></span>
     <button type="button" id="export-btn" class="link-btn">Export</button>
     <button type="button" id="import-btn" class="link-btn">Import</button>
+    <button type="button" id="install-btn" class="link-btn" hidden>Install app</button>
     <input type="file" id="import-file" accept=".json,application/json" hidden>
   </div>
 
@@ -1255,6 +1264,36 @@
     };
     reader.onerror = function () { toast('Could not read that file'); importFile.value = ''; };
     reader.readAsText(file);
+  });
+
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+
+  const installBtn = document.getElementById('install-btn');
+  let installPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', function (event) {
+    event.preventDefault();
+    installPrompt = event;
+    installBtn.hidden = false;
+  });
+
+  window.addEventListener('appinstalled', function () { installBtn.hidden = true; });
+
+  if (!window.matchMedia('(display-mode: standalone)').matches) installBtn.hidden = false;
+
+  installBtn.addEventListener('click', async function () {
+    if (installPrompt) {
+      installPrompt.prompt();
+      await installPrompt.userChoice;
+      installPrompt = null;
+      installBtn.hidden = true;
+    } else {
+      toast('Browser menu → Install app, or Share → Add to Home Screen on iPhone');
+    }
   });
 
   buildTicks();
