@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/reminder.js": {
+      "experimentalTriggers": [{ "type": "schedule/v1beta" }]
+    }
+  },
+  "schedules": {
+    "daily-syllabus-reminder": {
+      "schedule": "35 12 * * *",
+      "timezone": "Africa/Accra",
+      "function": "api/reminder"
+    }
+  }
+}
